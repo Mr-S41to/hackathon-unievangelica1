@@ -64,7 +64,7 @@ router
   .get((req, res) => VeiculoController.getByUserId(req, res));
 
 router
-  .route("solicitar-coleta")
+  .route("/solicitar-coleta")
   .post((req, res) => SolicitarColetaController.save(req, res))
   .get((req, res) => SolicitarColetaController.list(req, res));
 

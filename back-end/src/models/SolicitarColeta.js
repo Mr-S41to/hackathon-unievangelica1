@@ -31,7 +31,7 @@ const SolicitarColeta = sequelize.define("solicitar-coleta", {
         },
       },
     data: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
     },
     tipoRejeito: {
         type: Sequelize.STRING(32),

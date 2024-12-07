@@ -8,8 +8,13 @@ import {
   Marker,
   Popup
 } from "react-leaflet";
+import axios from "axios";
 import L from "leaflet";
 import "./App.css";
+import Button from "./components/Button";
+import Input from "./components/Input";
+import Radio from "./components/Radio";
+import Label from "./components/Label";
 
 function App() {
   const [popupContent, setPopupContent] = useState(null);
@@ -28,13 +33,18 @@ function App() {
     password: "12345678",
     tipo: "coperativa",
     cpfCnpj: "12345678901",
-    lat: -16.286652,
-    long: -48.9498957
+    coords: [-16.286652, -48.9498957]
   } // Dados de usuario para teste.
   console.log("Dados de Usuário: ", User);
 
+  //Variaveis de localização e solicitação.
   const [position, setPosition] = useState(null);
   console.log("Cood", position);
+  const [data, setData] = useState(new Date());
+  console.log("Data Atual: ", data);
+  const [tipoRejeito, setTipoRejeito] = useState(null);
+  const [status, setStatus] = useState("Solicitado");
+
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -54,8 +64,8 @@ function App() {
   //Custumização de Maker do usúario.
   const UserMaker = L.divIcon({
     className: "custom-icon", // Nome da classe para estilização
-    html: 
-    `<div style="
+    html:
+      `<div style="
       width: 20px; 
       height: 20px; 
       background-color: #03045e; 
@@ -64,6 +74,34 @@ function App() {
     </div>`,
     iconSize: [20, 20],
   });
+
+  //Funções de post e get.
+  const url = "http://localhost:3001";
+  const headers = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const solicitarColeta = async () => {
+    try {
+      const response = await axios.post(`${url}/solicitar-coleta`, {
+        coords: position,
+        data: data,
+        tipoRejeito: tipoRejeito,
+        status: status,
+        userId: User.id
+      },
+        headers
+      );
+      console.log(response.data);
+      alert(response.message);
+      closePopup();
+    } catch (error) {
+      console.error("Erro", error);
+      // closePopup();
+    }
+  }
 
   const handlePopup = (content) => {
     setPopupContent(content);
@@ -145,56 +183,69 @@ function App() {
       );
     }
 
+    //Solicitar Coleta PopUp.
     if (popupContent === "Requisitar Coleta") {
       return (
         <div className="popup-content">
           <h3>Requisitar Coleta</h3>
-          <form>
-            <label>
-              Nome:
-              <input
-                type="text"
-                name="name"
-                value={collectionData.name}
-                onChange={handleInputChange}
+
+          {position ? (
+            <MapContainer
+              center={position}
+              zoom={15}
+              style={{
+                height: "35vh",
+                width: "100%",
+                border: "2.5px solid #000000",
+                borderRadius: "32px",
+              }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-            </label>
-            <label>
-              Bairro:
-              <input
-                type="text"
-                name="neighborhood"
-                value={collectionData.neighborhood}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              CEP:
-              <input
-                type="text"
-                name="zipCode"
-                value={collectionData.zipCode}
-                onChange={handleInputChange}
-              />
-            </label>
-            <div>
-              <h4>Tipos de Resíduos:</h4>
-              {["Orgânico", "Inorgânico", "Doméstico", "Recicláveis"].map((type) => (
-                <label key={type}>
-                  <input
-                    type="checkbox"
-                    checked={collectionData.wasteTypes.includes(type)}
-                    onChange={() => handleWasteTypeToggle(type)}
-                  />
-                  {type}
-                </label>
-              ))}
-            </div>
-            <button type="button" onClick={handleSubmitCollection}>
-              Salvar
-            </button>
-          </form>
-          <button onClick={closePopup}>Fechar</button>
+              <Marker
+                position={position}
+                icon={UserMaker}
+              >
+                <Popup>Solicitar Coleta para essa localização...</Popup>
+              </Marker>
+            </MapContainer>
+          ) : (
+            <p>Carregando mapa...</p>
+          )}
+
+          <div className="column">
+            <Label title="Tipo de Resíduos" />
+            <Radio
+              name="tipoRejeito"
+              value="Recicláveis"
+              title="Recicláveis"
+              checked={tipoRejeito === "Recicláveis"}
+              onChange={() => setTipoRejeito("Recicláveis")}
+            />
+            <Radio
+              name="tipoRejeito"
+              value="Eletrônico"
+              title="Eletrônico"
+              checked={tipoRejeito === "Eletrônico"}
+              onChange={() => setTipoRejeito("Eletrônico")}
+            />
+            <Radio
+              name="tipoRejeito"
+              value="Outros"
+              title="Outros"
+              checked={tipoRejeito === "Outros"}
+              onChange={() => setTipoRejeito("Outros")}
+            />
+          </div>
+          <div className="center">
+            <Button
+              title="Solicitar Coleta"
+              onClick={() => solicitarColeta()}
+            />
+
+          </div>
         </div>
       );
     }
@@ -262,14 +313,14 @@ function App() {
               height: "65vh",
               width: "100%",
               border: "2.5px solid #000000",
-              borderRadius: "32px",
+              borderRadius: "32px"
             }}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            <Marker 
+            <Marker
               position={position}
               icon={UserMaker}
             >

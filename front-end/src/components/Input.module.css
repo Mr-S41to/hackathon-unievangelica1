@@ -1,0 +1,21 @@
+.input {
+    color: #000000;
+    border-color: #57cc99;
+    padding: 10px;
+    height: 40px;
+    border-radius: 20px;
+    border-width: 1px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+  
+  .inputContainer {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .label {
+    font-weight: bold;
+    color: #57cc99;
+  }
+  
