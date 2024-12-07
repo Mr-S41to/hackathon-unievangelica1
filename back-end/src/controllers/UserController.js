@@ -30,7 +30,11 @@ exports.save = async (req, res) => {
     id, 
     login,  
     password,
-    name
+    nome,
+    tipo,
+    cpfCnpj,
+    lat,
+    long,
    } = req.body;
 
   let signature = null;
@@ -44,7 +48,11 @@ exports.save = async (req, res) => {
     id,
     login,
     password,
-    name
+    nome,
+    tipo,
+    cpfCnpj,
+    lat,
+    long,
   })
     .then((post) => {
       console.log("Usuário criado com sucesso:", post);
@@ -81,7 +89,7 @@ exports.update = async (req, res) => {
   const { 
     login,
     password,
-    name } = req.body;
+    nome } = req.body;
   const signature = req.file ? req.file.path : null;
 
   try {
@@ -89,7 +97,11 @@ exports.update = async (req, res) => {
         id,
         login,
         password,
-        name
+        nome,
+        tipo,
+        cpfCnpj,
+        lat,
+        long,
       },
       { where: { id } }
     );

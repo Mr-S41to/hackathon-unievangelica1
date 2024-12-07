@@ -1,8 +1,9 @@
 const Sequelize = require("sequelize");
-const bcrypt = require("bcrypt");
 const sequelize = require("../config/db");
+//Algoritimo de senhas.
+const bcrypt = require("bcrypt");
 
-const User = sequelize.define("user", {
+const User = sequelize.define("users", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -18,10 +19,29 @@ const User = sequelize.define("user", {
     type: Sequelize.STRING,  //Para acomodar o hash bcrypt
     allowNull: false,
   },
-  name: {
-    type: Sequelize.STRING(128),
-    allowNull: true,
+  tipo: {
+    type: Sequelize.STRING(32),
   },
+  nome: {
+    type: Sequelize.STRING(128),
+  },
+  cpfCnpj: {
+    type: Sequelize.STRING(32),
+  },
+  lat: {
+    type: Sequelize.FLOAT,
+    validate: {
+      min: -90,
+      max: 90,
+    },
+  },
+  long: {
+    type: Sequelize.FLOAT,
+    validate: {
+      min: -180,
+      max: 180,
+    },
+  },  
 }, {
   hooks: {
     beforeCreate: async (user) => {
@@ -42,6 +62,6 @@ const User = sequelize.define("user", {
 sequelize
   .sync({ force: false })
   .then(() => console.log("Tabela User iniciada!"))
-  .catch((error) => console.log("Erro ao iniciar a tabela.", error));
+  .catch((error) => console.log("Erro ao iniciar a tabela User.", error));
 
 module.exports = User;
