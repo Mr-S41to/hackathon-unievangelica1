@@ -1,6 +1,12 @@
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .main {
-  background-image: url(../src/imgs/background.jpeg);
-  background-size: cover;
+  /* background-image: url(../src/imgs/background.jpeg);
+  background-size: cover; */
 }
 
 .App {
@@ -18,12 +24,6 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-}
-
-.map{
-  border-radius: 32px;
-  border: solid, 2.5px, #000000;
-  margin: 40px;
 }
 
 #menu {
@@ -47,10 +47,6 @@
   align-items: center;
   padding: 0 15px;
   margin-bottom: 20px;
-}
-
-.menu-header h2 {
-  margin: 0;
 }
 
 .menu-icon {

@@ -28,20 +28,27 @@ const User = sequelize.define("users", {
   cpfCnpj: {
     type: Sequelize.STRING(32),
   },
-  lat: {
-    type: Sequelize.FLOAT,
+  coords: {
+    type: Sequelize.JSON, //Armazena o array como JSON.
+    allowNull: true,
     validate: {
-      min: -90,
-      max: 90,
+      isValidCoordinates(value) {
+        if (!Array.isArray(value) || value.length !== 2) {
+          throw new Error("Coordinates devem ser um array com dois números [lat, long].");
+        }
+        const [lat, long] = value;
+        if (typeof lat !== "number" || typeof long !== "number") {
+          throw new Error("Latitude e longitude devem ser números.");
+        }
+        if (lat < -90 || lat > 90) {
+          throw new Error("Latitude deve estar entre -90 e 90.");
+        }
+        if (long < -180 || long > 180) {
+          throw new Error("Longitude deve estar entre -180 e 180.");
+        }
+      },
     },
   },
-  long: {
-    type: Sequelize.FLOAT,
-    validate: {
-      min: -180,
-      max: 180,
-    },
-  },  
 }, {
   hooks: {
     beforeCreate: async (user) => {

@@ -1,14 +1,68 @@
-import React, { useState } from 'react';
-import './App.css';
+import React, {
+  useState,
+  useEffect
+} from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup
+} from "react-leaflet";
+import L from "leaflet";
+import "./App.css";
 
 function App() {
   const [popupContent, setPopupContent] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [collectionData, setCollectionData] = useState({
-    name: '',
-    neighborhood: '',
-    zipCode: '',
+    name: "",
+    neighborhood: "",
+    zipCode: "",
     wasteTypes: [],
+  });
+
+  const User = {
+    id: 1,
+    nome: "João da Silva",
+    login: "joaodasilva01",
+    password: "12345678",
+    tipo: "coperativa",
+    cpfCnpj: "12345678901",
+    lat: -16.286652,
+    long: -48.9498957
+  } // Dados de usuario para teste.
+  console.log("Dados de Usuário: ", User);
+
+  const [position, setPosition] = useState(null);
+  console.log("Cood", position);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setPosition([pos.coords.latitude, pos.coords.longitude]);
+        },
+        (err) => {
+          console.error("Erro ao obter localização:", err);
+          //Define uma posição padrão caso a localização não seja obtida.
+          setPosition([-15.8267, -47.9218]); //Brasília.
+        }
+      );
+    }
+  }, []);
+
+  //Custumização de Maker do usúario.
+  const UserMaker = L.divIcon({
+    className: "custom-icon", // Nome da classe para estilização
+    html: 
+    `<div style="
+      width: 20px; 
+      height: 20px; 
+      background-color: #03045e; 
+      border-radius: 50%; 
+      box-shadow: 0 0 10px rgba(0, 0, 255, 0.5);">
+    </div>`,
+    iconSize: [20, 20],
   });
 
   const handlePopup = (content) => {
@@ -47,12 +101,12 @@ function App() {
     Nome: ${collectionData.name}
     Bairro: ${collectionData.neighborhood}
     CEP: ${collectionData.zipCode}
-    Tipos de resíduos: ${collectionData.wasteTypes.join(', ')}`);
+    Tipos de resíduos: ${collectionData.wasteTypes.join(", ")}`);
     closePopup();
   };
 
   const renderPopupContent = () => {
-    if (popupContent === 'Horários') {
+    if (popupContent === "Horários") {
       return (
         <div className="popup-content">
           <h3>Horários dos Coletores</h3>
@@ -91,7 +145,7 @@ function App() {
       );
     }
 
-    if (popupContent === 'Requisitar Coleta') {
+    if (popupContent === "Requisitar Coleta") {
       return (
         <div className="popup-content">
           <h3>Requisitar Coleta</h3>
@@ -125,7 +179,7 @@ function App() {
             </label>
             <div>
               <h4>Tipos de Resíduos:</h4>
-              {['Orgânico', 'Inorgânico', 'Doméstico', 'Recicláveis'].map((type) => (
+              {["Orgânico", "Inorgânico", "Doméstico", "Recicláveis"].map((type) => (
                 <label key={type}>
                   <input
                     type="checkbox"
@@ -170,14 +224,11 @@ function App() {
             <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
           </svg>
         )}
-
       </header>
 
       <div className="App">
-
-        {/* Menu Lateral */}
-        <div id="menu" className={isMenuOpen ? '' : 'menu-hidden'}>
-          <div className="menu-header">
+        <div id="menu" className={isMenuOpen ? "" : "menu-hidden"}>
+          <div>
             <h2>MENU</h2>
             {isMenuOpen && (
               <svg
@@ -193,22 +244,43 @@ function App() {
               </svg>
             )}
           </div>
-          {[
-            'Rotas', 
-            'Coletas', 
-            'Relatórios', 
-            'Horários', 
-            'Requisitar Coleta', 
-            'Cadastrar Rotas'
-          ].map((item) => (
-            <p key={item} onClick={() => handlePopup(item)}>
-              {item}
-            </p>
-          ))}
+          {["Rotas", "Coletas", "Relatórios", "Horários", "Requisitar Coleta", "Cadastrar Rotas"].map(
+            (item) => (
+              <p key={item} onClick={() => handlePopup(item)}>
+                {item}
+              </p>
+            )
+          )}
         </div>
 
-        {popupContent && <div className="popup">{renderPopupContent()}</div>}
+        {position ? (
+          <MapContainer
+            center={position}
+            zoom={15}
+            style={{
+              margin: 60,
+              height: "65vh",
+              width: "100%",
+              border: "2.5px solid #000000",
+              borderRadius: "32px",
+            }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <Marker 
+              position={position}
+              icon={UserMaker}
+            >
+              <Popup>Sua localização atual</Popup>
+            </Marker>
+          </MapContainer>
+        ) : (
+          <p>Carregando mapa...</p>
+        )}
 
+        {popupContent && <div className="popup">{renderPopupContent()}</div>}
       </div>
     </main>
   );

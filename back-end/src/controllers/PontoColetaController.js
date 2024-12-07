@@ -13,14 +13,12 @@ exports.save = async (req, res) => {
     console.log("Dados recebidos no corpo da requisição:", req.body);
     const {
         id,
-        lat,
-        long
+        coords
     } = req.body;
 
     PontoColeta.create({
         id,
-        lat,
-        long
+        coords
     })
         
     .then((post) => {

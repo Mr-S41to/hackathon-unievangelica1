@@ -12,8 +12,7 @@ exports.save = async (req, res) => {
     console.log("Dados recebidos no corpo da requisição:", req.body);
     const {
         id,
-        lat,
-        long,
+        coords,
         data,
         tipoRejeito,
         status,
@@ -22,8 +21,7 @@ exports.save = async (req, res) => {
 
     SolicitarColeta.create({
         id,
-        lat,
-        long,
+        coords,
         data,
         tipoRejeito,
         status,
@@ -49,8 +47,7 @@ exports.update = async (req, res) => {
     console.log("Dados recebidos no corpo da requisição:", req.body);
     const { id } = req.params;
     const {
-        lat,
-        long,
+        coords,
         data,
         tipoRejeito,
         status,

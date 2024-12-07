@@ -48,38 +48,38 @@ router
 
 // router
 //   .route("/users")
-//   .get(AuthenticateToken, (req, res) => UserController.list(req, res));
+//   .get( (req, res) => UserController.list(req, res));
 
 router
   .route("/user/:id")
-  .get(AuthenticateToken, (req, res) => UserController.getOne(req, res))
-  .put(AuthenticateToken, signature, (req, res) => UserController.update(req, res));
+  .get((req, res) => UserController.getOne(req, res))
+  .put(signature, (req, res) => UserController.update(req, res));
 
 router
   .route("/veiculos")
-  .post(AuthenticateToken, (req, res) => VeiculoController.save(req, res));
+  .post((req, res) => VeiculoController.save(req, res));
 
 router
   .route("/veiculos/:userId")
-  .get(AuthenticateToken, (req, res) => VeiculoController.getByUserId(req, res));
+  .get((req, res) => VeiculoController.getByUserId(req, res));
 
 router
   .route("solicitar-coleta")
-  .post(AuthenticateToken, (req, res) => SolicitarColetaController.save(req, res))
-  .get(AuthenticateToken, (req, res) => SolicitarColetaController.list(req, res));
+  .post((req, res) => SolicitarColetaController.save(req, res))
+  .get((req, res) => SolicitarColetaController.list(req, res));
 
 router
   .route("/solicitar-coleta/:id")
-  .put(AuthenticateToken, (req, res) => SolicitarColetaController.update(req, res));
+  .put((req, res) => SolicitarColetaController.update(req, res));
 
 router
   .route("/ponto-coleta")
-  .post(AuthenticateToken, (req, res) => PontoColetaController.save(req, res))
-  .get(AuthenticateToken, (req, res) => PontoColetaController.list(req, res));
+  .post((req, res) => PontoColetaController.save(req, res))
+  .get((req, res) => PontoColetaController.list(req, res));
 
 router
   .route("/rota")
-  .post(AuthenticateToken, (req, res) => RotaController.save(req, res))
-  .get(AuthenticateToken, (req, res) => RotaController.list(req, res));
+  .post((req, res) => RotaController.save(req, res))
+  .get((req, res) => RotaController.list(req, res));
 
 module.exports = router;
