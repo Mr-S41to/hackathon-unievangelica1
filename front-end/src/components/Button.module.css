@@ -1,6 +1,6 @@
 .button {
   position: relative;
-  color: #c7f9cc;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,7 +9,6 @@
   padding: 10px;
   padding-inline: 20px;
   margin: 10px;
-  margin-inline: 80px;
   font-weight: bold;
   border-radius: 20px;
   border: none;
