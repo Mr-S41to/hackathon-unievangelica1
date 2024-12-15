@@ -23,3 +23,11 @@ A arquitetura utilizada segue o padrão **Model-Controller**.
 2. Inicie o projeto:
    ```CMD
    npm start
+
+
+3. Em outro terminal, abra a pasta /keys e rode o comando:
+   ```CMD
+   node KeyGenerete.js
+
+
+4. copie o valor gerado no terminal e salve a Secrete Kei no arquivo ```"/.env"``` na raiz do projeto
